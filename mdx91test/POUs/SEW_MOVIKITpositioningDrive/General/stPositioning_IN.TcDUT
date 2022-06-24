@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="stPositioning_IN" Id="{bed8ebea-da96-4e48-bdab-9da0511937b1}">
+    <Declaration><![CDATA[TYPE stPositioning_IN :
+STRUCT
+	arrProcessdata_IN AT %I*: ARRAY[0..7] OF UINT;
+		
+	bEnableEmergencyStop: BOOL;
+	bEnableApplicationStop: BOOL;
+	bReleaseBrake: BOOL;
+	bJogPositive: BOOL;
+	bJogNegative: BOOL;
+	bApplyRelPos: BOOL;
+	bStartStop: BOOL;
+	bFaultReset: BOOL;
+	bActivateDriveTrain2: BOOL;
+	bDeactivateSWLimitSwitch: BOOL;
+	bActivateOutputstageInhibit: BOOL;
+	bActivateStandBy: BOOL;
+	bHAndshakeIN: BOOL;
+	bActivateHandShake: BOOL;
+		
+	iSetpointSpeed: INT;
+	uiAcceleration: UINT;
+	uiDeceleration: UINT;
+	eTargetApplMode: eMOVIKITpositioningDrive_ApplMode;
+	diTargetPosition: DINT;
+	uiPosMulitplier: UINT;
+	
+	bDIO01_DO: BOOL;
+	bDIO02_DO: BOOL;
+	
+	
+
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

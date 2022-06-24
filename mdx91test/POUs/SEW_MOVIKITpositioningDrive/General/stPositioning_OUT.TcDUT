@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="stPositioning_OUT" Id="{8e75f2ed-69db-4c23-b479-245f577db6bd}">
+    <Declaration><![CDATA[TYPE stPositioning_OUT :
+STRUCT
+	arrProcessdata_OUT AT %Q*: ARRAY[0..7] OF UINT;
+	
+	bInverterReady: BOOL;
+	bSTOinactive: BOOL;
+	bOutputstageEnabled: BOOL;
+	bBrakeReleased: BOOL;
+	bMotorRunning: BOOL;
+	bActiveDriveReferenced: BOOL;
+	bNewRelPosApplied: BOOL;
+	bInPosition: BOOL;
+	bFault: BOOL;
+	bWarning: BOOL;
+	bDriveTrain2Active: BOOL;
+	bSpeedComparisonActive:BOOL;
+	bSWLimitSwitchInactive: BOOL;
+	bStandByModeActive: BOOL;
+	bHandshakeOUT: BOOL;
+	
+	iActualSpeed: INT;
+	uiStatus: UINT;
+	uiFaultNo: UINT;
+	uiWarningNo: UINT;
+	uiSubFaultNo: UINT;
+	uiActualTorque: UINT;
+	
+	eActualApplMode: eMOVIKITpositioningDrive_ApplMode;
+	diActualPosition: DINT;
+	
+	
+	bDI00: BOOL;
+	bDI01: BOOL;
+	bDI02: BOOL;
+	bDI03: BOOL;
+	bDI04: BOOL;
+	bDI05: BOOL;
+	bDI06: BOOL;
+	bDI07: BOOL;
+	bDI08: BOOL;
+	bDIO01_DI: BOOL;
+	bDIO02_DI: BOOL;
+	
+
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

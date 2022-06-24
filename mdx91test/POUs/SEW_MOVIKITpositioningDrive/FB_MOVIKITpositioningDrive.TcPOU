@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="FB_MOVIKITpositioningDrive" Id="{595dd95d-da60-4e6b-8271-6a714fd84e56}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_MOVIKITpositioningDrive
+VAR_INPUT
+	//example_stMovikitpositioningDrive : REFERENCE TO stMOVIKITpositioningDrive;	
+
+	arrProcessdata_IN: ARRAY[0..7] OF UINT;
+	bEnableEmergencyStop: BOOL;
+	bEnableApplicationStop: BOOL;
+	bReleaseBrake: BOOL;
+	bJogPositive: BOOL;
+	bJogNegative: BOOL;
+	bApplyRelPos: BOOL;
+	bStartStop: BOOL;
+	bFaultReset: BOOL;
+	bActivateDriveTrain2: BOOL;
+	bDeactivateSWLimitSwitch: BOOL;
+	bActivateOutputstageInhibit: BOOL;
+	bActivateStandBy: BOOL;
+	bHAndshakeIN: BOOL;
+	
+		
+	iSetpointSpeed: INT;
+	uiAcceleration: UINT;
+	uiDeceleration: UINT;
+	eTargetApplMode: eMOVIKITpositioningDrive_ApplMode;
+	diTargetPosition: DINT;
+	uiDecimalPlaces: UINT;
+	
+	bDIO01_DO: BOOL;
+	bDIO02_DO: BOOL;
+	
+	
+END_VAR
+VAR_OUTPUT
+	arrProcessdata_OUT: ARRAY[0..7] OF UINT;
+	bInverterReady: BOOL;
+	bSTOinactive: BOOL;
+	bOutputstageEnabled: BOOL;
+	bBrakeReleased: BOOL;
+	bMotorRunning: BOOL;
+	bActiveDriveReferenced: BOOL;
+	bNewRelPosApplied: BOOL;
+	bInPosition: BOOL;
+	bFault: BOOL;
+	bWarning: BOOL;
+	bDriveTrain2Active: BOOL;
+	bSpeedComparisonActive:BOOL;
+	bSWLimitSwitchInactive: BOOL;
+	bStandByModeActive: BOOL;
+	bHandshakeOUT: BOOL;
+	
+	iActualSpeed: INT;
+	uiActualTorque: UINT;
+	eActualApplMode: eMOVIKITpositioningDrive_ApplMode;
+	diActualPosition: DINT;
+	
+	uiStatus: UINT;
+	uiFaultNo: UINT;
+	uiSubFaultNo: UINT;
+	uiWarningNo: UINT;
+	
+	
+	
+	
+	bDI00: BOOL;
+	bDI01: BOOL;
+	bDI02: BOOL;
+	bDI03: BOOL;
+	bDI04: BOOL;
+	bDI05: BOOL;
+	bDI06: BOOL;
+	bDI07: BOOL;
+	bDI08: BOOL;
+	bDIO01_DI: BOOL;
+	bDIO02_DI: BOOL;
+END_VAR
+VAR
+	uiFaultStatus_i: UINT;
+	uiSetPosHigh_i: UINT;
+	uiSetPosLow_i: UINT;
+	uiActPosHigh_i: DINT;
+	uiActPosLow_i: DINT;
+	uiStatus_SubFault_i: UINT;
+	uiActualApplMode_i: UINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//================================================================================================================
+//
+//	This Beckhoff TwinCAT 3 function block is a sample program for controlling the drive using 
+//	"MOVIKITdrive positioning" via fieldbus on MOVI-C(R) inverters.
+//	It is an open function block and may be changed by the customer to his needs.
+//	
+//	Liability/Disclaimer
+//	--------------------
+//	This sample program outlines a basic approach for informational and demonstration purposes only. 
+//	The User understands and agrees that SEW-EURODRIVE has made no representation or warranty hereunder, 
+//	expressed or implied, as to the accuracy or completeness of the sample program software, 
+//	and shall have NO liability hereunder to the User or its Representatives relating to or resulting 
+//	from the use of the sample program software or any errors therein or omissions therefrom.
+//
+//	Change Log
+//	----------
+//	- Creation Date: 	2021-04-14	
+//	- V1.0				2021-04-14	
+//
+//	co-applicable software
+//	----------------------
+//	For using the function block the following STRUCS and ENUMS may also be imported
+//	- eMOVIKITpositioningDrive_ApplMode 	(ENUM)
+//	- stMOVIKITpositioningDrive				(STRUCT)
+//	- stPositioning_IN						(STRUCT)
+//	- stPositioning_OUT						(STRUCT)
+//
+//==================================================================================================================
+
+
+IF uiDecimalPlaces=0 THEN
+	uiDecimalPlaces := 1;
+END_IF
+
+diTargetPosition := diTargetPosition*uiDecimalPlaces;
+uiSetPosLow_i := DINT_TO_UINT(diTargetPosition AND 16#0000FFFF); 
+uiSetPosHigh_i := DINT_TO_UINT(SHR(diTargetPosition,16)); 
+
+(*====================================================================================
+	Control --> PO
+=====================================================================================*)
+arrProcessdata_OUT[0].0 := bEnableEmergencyStop;
+arrProcessdata_OUT[0].1 := bEnableApplicationStop;
+arrProcessdata_OUT[0].3 := bReleaseBrake;
+arrProcessdata_OUT[0].4 := bJogPositive;
+arrProcessdata_OUT[0].5 := bJogNegative;
+arrProcessdata_OUT[0].6 := bApplyRelPos;
+arrProcessdata_OUT[0].7 := bStartStop;
+arrProcessdata_OUT[0].8 := bFaultReset;
+
+arrProcessdata_OUT[0].10 := bActivateDriveTrain2;
+arrProcessdata_OUT[0].12 := bDeactivateSWLimitSwitch;
+arrProcessdata_OUT[0].13 := bActivateOutputstageInhibit;
+arrProcessdata_OUT[0].14 := bActivateStandBy;
+arrProcessdata_OUT[0].15 := bHAndshakeIN;
+
+
+arrProcessdata_OUT[1] := iSetpointSpeed;
+arrProcessdata_OUT[2] := uiAcceleration;
+arrProcessdata_OUT[3] := uiDeceleration;
+
+arrProcessdata_OUT[4].0 := bDIO01_DO;
+arrProcessdata_OUT[4].1 := bDIO02_DO;
+
+arrProcessdata_OUT[5] := eTargetApplMode;
+
+arrProcessdata_OUT[6] := uiSetPosHigh_i;
+arrProcessdata_OUT[7] := uiSetPosLow_i;
+
+(*====================================================================================
+	PI --> Status
+=====================================================================================*)
+bInverterReady := arrProcessdata_IN[0].0;
+bSTOinactive := arrProcessdata_IN[0].1;
+bOutputstageEnabled := arrProcessdata_IN[0].2;
+bBrakeReleased := arrProcessdata_IN[0].3;
+bMotorRunning := arrProcessdata_IN[0].4;
+bActiveDriveReferenced := arrProcessdata_IN[0].5;
+bNewRelPosApplied := arrProcessdata_IN[0].6;
+bInPosition := arrProcessdata_IN[0].7;
+bFault := arrProcessdata_IN[0].8;
+bWarning := arrProcessdata_IN[0].9;
+bDriveTrain2Active := arrProcessdata_IN[0].10;
+bSpeedComparisonActive := arrProcessdata_IN[0].11;
+bSWLimitSwitchInactive := arrProcessdata_IN[0].12;
+bStandByModeActive := arrProcessdata_IN[0].14;
+bHandshakeOUT := arrProcessdata_IN[0].15;
+
+iActualSpeed:= arrProcessdata_IN[1];
+uiStatus_SubFault_i := arrProcessdata_IN[2] AND 16#0F; 
+uiFaultStatus_i := SHR(arrProcessdata_IN[2],8);
+
+
+
+
+IF NOT bFault AND NOT bWarning THEN
+	uiStatus := uiStatus_SubFault_i;
+	uiFaultNo := 0;
+	uiSubFaultNo := 0;
+	uiWarningNo := 0;
+ELSE
+	uiStatus := 0;
+	
+	IF bWarning THEN
+		uiFaultNo := 0;
+		uiSubFaultNo := 0;
+		uiWarningNo := uiFaultStatus_i;
+	ELSIF bFault THEN
+		uiFaultNo := uiFaultStatus_i;
+		uiSubFaultNo := uiStatus_SubFault_i;
+		uiWarningNo := 0;
+	END_IF
+		
+END_IF
+
+uiActualTorque:= arrProcessdata_IN[3];
+
+bDI00 := arrProcessdata_IN[4].0;
+bDI01 := arrProcessdata_IN[4].1;
+bDI02 := arrProcessdata_IN[4].2;
+bDI03 := arrProcessdata_IN[4].3;
+bDI04 := arrProcessdata_IN[4].4;
+bDI05 := arrProcessdata_IN[4].5;
+bDI06 := arrProcessdata_IN[4].6;
+bDI07 := arrProcessdata_IN[4].7;
+bDI08 := arrProcessdata_IN[4].8;
+
+eActualApplMode := arrProcessdata_IN[5];
+
+
+uiActPosLow_i := UINT_TO_DWORD(arrProcessdata_IN[7]);
+uiActPosHigh_i := SHL(UINT_TO_DWORD(arrProcessdata_IN[6]),16);
+diActualPosition := (uiActPosHigh_i + uiActPosLow_i)/uiDecimalPlaces;
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_MOVIKITpositioningDrive">
+      <LineId Id="445" Count="0" />
+      <LineId Id="447" Count="1" />
+      <LineId Id="452" Count="0" />
+      <LineId Id="474" Count="0" />
+      <LineId Id="449" Count="0" />
+      <LineId Id="453" Count="0" />
+      <LineId Id="450" Count="0" />
+      <LineId Id="459" Count="3" />
+      <LineId Id="454" Count="3" />
+      <LineId Id="463" Count="0" />
+      <LineId Id="465" Count="0" />
+      <LineId Id="464" Count="0" />
+      <LineId Id="467" Count="0" />
+      <LineId Id="466" Count="0" />
+      <LineId Id="468" Count="0" />
+      <LineId Id="470" Count="3" />
+      <LineId Id="469" Count="0" />
+      <LineId Id="458" Count="0" />
+      <LineId Id="475" Count="0" />
+      <LineId Id="446" Count="0" />
+      <LineId Id="358" Count="3" />
+      <LineId Id="357" Count="0" />
+      <LineId Id="176" Count="0" />
+      <LineId Id="178" Count="1" />
+      <LineId Id="84" Count="6" />
+      <LineId Id="163" Count="1" />
+      <LineId Id="91" Count="6" />
+      <LineId Id="275" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="102" Count="6" />
+      <LineId Id="168" Count="0" />
+      <LineId Id="167" Count="0" />
+      <LineId Id="170" Count="0" />
+      <LineId Id="169" Count="0" />
+      <LineId Id="171" Count="0" />
+      <LineId Id="109" Count="20" />
+      <LineId Id="174" Count="0" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="181" Count="0" />
+      <LineId Id="180" Count="0" />
+      <LineId Id="131" Count="31" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="183" Count="0" />
+      <LineId Id="182" Count="0" />
+      <LineId Id="444" Count="0" />
+      <LineId Id="185" Count="0" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="189" Count="1" />
+      <LineId Id="188" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

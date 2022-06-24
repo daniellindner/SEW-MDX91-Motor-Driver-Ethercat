@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="eMOVIKITpositioningDrive_ApplMode" Id="{0b3b85fe-caf0-4859-b6d7-81582b5185bb}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+
+TYPE eMOVIKITpositioningDrive_ApplMode :
+(
+	NoModeAssigned := 0,
+	JogPosition := 100,
+	JogVelocity := 101,
+	Velocity := 200,
+	ReferenceOffsParam := 300,
+	ReferenceOffsFieldb := 301,
+	PositionAbs := 400,
+	PositionRel := 401,
+	PositionModPos := 402,
+	PositionModNeg := 403,
+	PositionModShort := 404,
+	PositionAbsNoRef := 405,
+	PositionTouchProbe := 420
+)UINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

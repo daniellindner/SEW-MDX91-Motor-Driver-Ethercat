@@ -1,0 +1,87 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <FileVersion>1.0.0.0</FileVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{580e1435-a830-4795-a3ab-281ba23950e5}</ProjectGuid>
+    <SubObjectsSortedByName>True</SubObjectsSortedByName>
+    <DownloadApplicationInfo>true</DownloadApplicationInfo>
+    <WriteProductVersion>true</WriteProductVersion>
+    <GenerateTpy>false</GenerateTpy>
+    <Name>mdx91test</Name>
+    <ProgramVersion>3.1.4023.0</ProgramVersion>
+    <Application>{34f05cb1-18a3-4031-b924-6503312eeb9f}</Application>
+    <TypeSystem>{a157600a-ee28-4a32-907f-9e053efc8cf8}</TypeSystem>
+    <Implicit_Task_Info>{5b74d8bb-9dd5-48bc-b4be-1da73232a846}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{ee49003e-bf78-460d-8082-7912681da5f6}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{a061b62e-4599-4b89-8ee8-5c94328a2ca8}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{8828c69b-a1dd-4e8d-a394-afc1764c74cc}</LibraryReferences>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="PlcTask.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\MAIN.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\SEW_MOVIKITpositioningDrive\FB_MOVIKITpositioningDrive.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\SEW_MOVIKITpositioningDrive\General\eMOVIKITpositioningDrive_ApplMode.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\SEW_MOVIKITpositioningDrive\General\stMOVIKITpositioningDrive.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\SEW_MOVIKITpositioningDrive\General\stPositioning_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\SEW_MOVIKITpositioningDrive\General\stPositioning_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DUTs" />
+    <Folder Include="GVLs" />
+    <Folder Include="POUs\SEW_MOVIKITpositioningDrive" />
+    <Folder Include="POUs\SEW_MOVIKITpositioningDrive\General" />
+    <Folder Include="POUs" />
+    <Folder Include="VISUs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderReference Include="Tc2_Standard">
+      <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Standard</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_System">
+      <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_System</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_Module">
+      <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc3_Module</Namespace>
+    </PlaceholderReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="mdx91test.tmc">
+      <SubType>Content</SubType>
+    </None>
+  </ItemGroup>
+  <ProjectExtensions>
+    <PlcProjectOptions>
+      <XmlArchive>
+        <Data>
+          <o xml:space="preserve" t="OptionKey">
+      <v n="Name">"&lt;ProjectRoot&gt;"</v>
+      <d n="SubKeys" t="Hashtable" />
+      <d n="Values" t="Hashtable" />
+    </o>
+        </Data>
+        <TypeList>
+          <Type n="Hashtable">System.Collections.Hashtable</Type>
+          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
+    </PlcProjectOptions>
+  </ProjectExtensions>
+</Project>

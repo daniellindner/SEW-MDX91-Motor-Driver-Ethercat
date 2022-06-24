@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="stMOVIKITpositioningDrive" Id="{1cdb44a8-26fa-46ea-a191-3cc94837c8d3}">
+    <Declaration><![CDATA[TYPE stMOVIKITpositioningDrive :
+STRUCT
+	IN: stPositioning_IN;
+	OUT: stPositioning_OUT;
+	ApplicationMode: eMOVIKITpositioningDrive_ApplMode;
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
