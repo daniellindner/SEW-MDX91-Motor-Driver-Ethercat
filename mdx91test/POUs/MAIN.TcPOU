@@ -1265,7 +1265,7 @@ MapStructureToMovicKitFB();
 		stDrive.IN.uiAcceleration			:= 100;			//[Anwendereinheit in der Achse]
 		stDrive.IN.uiDeceleration			:= 100;			//[Anwendereinheit in der Achse]
 		stDrive.IN.iSetpointSpeed			:= 30;			//[Anwendereinheit in der Achse]
-		stDrive.IN.diTargetPosition			:= 1000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.diTargetPosition			:= 1000;		//[Anwendereinheit in der Achse]
 		stDrive.IN.bStartStop				:= TRUE;		//TRUE = Freigabe Positionierbefehl
 		_uiState := 35;	
 
