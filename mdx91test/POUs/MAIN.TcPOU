@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
   <POU Name="MAIN" Id="{e8daf5db-9001-4d7d-a93e-b77cf75fbe13}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
@@ -1230,7 +1230,7 @@ MapStructureToMovicKitFB();
 	//Initialisieren
 	0:
 		IF NOT stDrive.Out.bFault THEN
-			_uiState := 10;
+			_uiState := 0;
 		END_IF
 
 	//Generiere Fahrbefehl auf 0mm
@@ -1287,6 +1287,35 @@ MapStructureToMovicKitFB();
 		
 		//Variante 2: Antrieb lässt Bremse einfallen und beendet Bestromung
 		stDrive.IN.bEnableApplicationStop	:= FALSE;		//TRUE = Freigabe
+		
+	45: 
+		stDrive.In.eTargetApplMode			:= eMOVIKITpositioningDrive_ApplMode.ReferenceOffsFieldb;
+		stDrive.IN.bEnableEmergencyStop		:= TRUE;		//TRUE = Freigabe
+		stDrive.IN.bEnableApplicationStop	:= TRUE;		//TRUE = Freigabe
+		stDrive.IN.bStartStop				:= TRUE;		//TRUE = Freigabe Positionierbefehl
+		//IF stDrive.OUT.bActiveDriveReferenced = TRUE THEN
+		//	_uiState := 0;
+		//END_IF
+		
+	50: 
+		stDrive.IN.bFaultReset := TRUE; 
+		IF stDrive.OUT.bFault = FALSE THEN 
+			stDrive.IN.bFaultReset := FALSE; 
+			_uiState := 0; 
+		END_IF
+		
+	60:
+	//Generiere Fahrbefehl auf 1000mm
+		stDrive.IN.eTargetApplMode			:= eMOVIKITpositioningDrive_ApplMode.PositionAbs;
+		stDrive.IN.bEnableApplicationStop	:= TRUE;		//TRUE = Freigabe
+		stDrive.IN.bEnableEmergencyStop		:= TRUE;		//TRUE = Freigabe
+		stDrive.IN.uiAcceleration			:= 100;			//[Anwendereinheit in der Achse]
+		stDrive.IN.uiDeceleration			:= 100;			//[Anwendereinheit in der Achse]
+		stDrive.IN.iSetpointSpeed			:= 30;			//[Anwendereinheit in der Achse]
+		stDrive.IN.diTargetPosition			:= -45280;		//[Anwendereinheit in der Achse]
+		stDrive.IN.bStartStop				:= TRUE;		//TRUE = Freigabe Positionierbefehl
+		_uiState := 0;	
+
 
 END_CASE]]></ST>
       </Implementation>
@@ -1299,7 +1328,9 @@ END_CASE]]></ST>
       <LineId Id="32" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.MotorMovementStateMachine">
-      <LineId Id="43" Count="18" />
+      <LineId Id="43" Count="6" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="51" Count="10" />
       <LineId Id="80" Count="1" />
       <LineId Id="62" Count="8" />
       <LineId Id="82" Count="0" />
@@ -1313,7 +1344,20 @@ END_CASE]]></ST>
       <LineId Id="101" Count="4" />
       <LineId Id="97" Count="0" />
       <LineId Id="83" Count="0" />
-      <LineId Id="71" Count="8" />
+      <LineId Id="71" Count="7" />
+      <LineId Id="107" Count="2" />
+      <LineId Id="113" Count="1" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="118" Count="1" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="123" Count="2" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="126" Count="1" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="129" Count="10" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="79" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
   </POU>
