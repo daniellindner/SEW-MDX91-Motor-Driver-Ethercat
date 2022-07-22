@@ -81,7 +81,7 @@ MapStructureToMovicKitFB();
                             <v n="LValue">false</v>
                             <v n="Boolean">false</v>
                             <v n="IsInstance">true</v>
-                            <v n="Id">86L</v>
+                            <v n="Id">104L</v>
                           </o>
                           <o n="OutputItems" t="OutputItemList">
                             <l2 n="OutputItems" cet="Operand">
@@ -375,8 +375,8 @@ MapStructureToMovicKitFB();
                                 <v n="Id">27L</v>
                               </o>
                               <o>
-                                <v n="Operand">"stDrive.OUT.diActualPosition"</v>
-                                <v n="Type">"DINT"</v>
+                                <v n="Operand">"stDrive.OUT.rActualPositionInMM"</v>
+                                <v n="Type">"REAL"</v>
                                 <v n="Comment">""</v>
                                 <v n="SymbolComment">""</v>
                                 <v n="Address">""</v>
@@ -983,8 +983,8 @@ MapStructureToMovicKitFB();
                             </o>
                             <o>
                               <o n="Operand" t="Operand">
-                                <v n="Operand">"stDrive.IN.diTargetPosition"</v>
-                                <v n="Type">"DINT"</v>
+                                <v n="Operand">"stDrive.IN.rTargetPositionInMM"</v>
+                                <v n="Type">"REAL"</v>
                                 <v n="Comment">""</v>
                                 <v n="SymbolComment">""</v>
                                 <v n="Address">""</v>
@@ -1078,7 +1078,7 @@ MapStructureToMovicKitFB();
                               <v>uiAcceleration</v>
                               <v>uiDeceleration</v>
                               <v>eTargetApplMode</v>
-                              <v>diTargetPosition</v>
+                              <v>rTargetPositionInMM</v>
                               <v>uiDecimalPlaces</v>
                               <v>bDIO01_DO</v>
                               <v>bDIO02_DO</v>
@@ -1102,7 +1102,7 @@ MapStructureToMovicKitFB();
                               <v>UINT</v>
                               <v>UINT</v>
                               <v>eMOVIKITpositioningDrive_ApplMode</v>
-                              <v>DINT</v>
+                              <v>REAL</v>
                               <v>UINT</v>
                               <v>BOOL</v>
                               <v>BOOL</v>
@@ -1129,7 +1129,7 @@ MapStructureToMovicKitFB();
                               <v>iActualSpeed</v>
                               <v>uiActualTorque</v>
                               <v>eActualApplMode</v>
-                              <v>diActualPosition</v>
+                              <v>rActualPositionInMM</v>
                               <v>uiStatus</v>
                               <v>uiFaultNo</v>
                               <v>uiSubFaultNo</v>
@@ -1166,7 +1166,7 @@ MapStructureToMovicKitFB();
                               <v>INT</v>
                               <v>UINT</v>
                               <v>eMOVIKITpositioningDrive_ApplMode</v>
-                              <v>DINT</v>
+                              <v>REAL</v>
                               <v>UINT</v>
                               <v>UINT</v>
                               <v>UINT</v>
@@ -1190,7 +1190,7 @@ MapStructureToMovicKitFB();
                           <n n="STSnippet" />
                           <v n="ContainsExtensibleInputs">false</v>
                           <v n="ProvidesSTSnippet">false</v>
-                          <v n="Id">87L</v>
+                          <v n="Id">105L</v>
                         </o>
                         <v n="Id">89L</v>
                       </o>
@@ -1233,15 +1233,16 @@ MapStructureToMovicKitFB();
 			_uiState := 0;
 		END_IF
 
-	//Generiere Fahrbefehl auf 0mm
+	//Generiere Fahrbefehl auf 1mm
 	10:
 		stDrive.IN.eTargetApplMode			:= eMOVIKITpositioningDrive_ApplMode.PositionAbs;
 		stDrive.IN.bEnableApplicationStop	:= TRUE;		//TRUE = Freigabe
 		stDrive.IN.bEnableEmergencyStop		:= TRUE;		//TRUE = Freigabe
-		stDrive.IN.uiAcceleration			:= 100;			//[Anwendereinheit in der Achse]
-		stDrive.IN.uiDeceleration			:= 100;			//[Anwendereinheit in der Achse]
-		stDrive.IN.iSetpointSpeed			:= 30;			//[Anwendereinheit in der Achse]
-		stDrive.IN.diTargetPosition			:= 0;			//[Anwendereinheit in der Achse]
+		stDrive.IN.uiAcceleration			:= 10000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.uiDeceleration			:= 10000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.iSetpointSpeed			:= 30000;			//[Anwendereinheit in der Achse]
+		//stDrive.IN.diTargetPosition			:= 160;			//[Anwendereinheit in der Achse]
+		stDrive.IN.rTargetPositionInMM := 1.0;
 		stDrive.IN.bStartStop				:= TRUE;		//TRUE = Freigabe Positionierbefehl
 		_uiState := 20;
 		
@@ -1252,20 +1253,21 @@ MapStructureToMovicKitFB();
 		//Varianten für In pos abfragen
 		//1. zeitverzögert fragen
 		//2. Istposition abgleichen mit Sollposition
-			IF ABS(stDrive.OUT.diActualPosition - stDrive.IN.diTargetPosition) < 1 THEN
+			IF ABS(stDrive.OUT.rActualPositionInMM - stDrive.IN.rTargetPositionInMM) < 0.01 THEN
 				_uiState := 30;
 			END_IF
 	
 
 	30:
-	//Generiere Fahrbefehl auf 1000mm
+	//Generiere Fahrbefehl auf 50mm
 		stDrive.IN.eTargetApplMode			:= eMOVIKITpositioningDrive_ApplMode.PositionAbs;
 		stDrive.IN.bEnableApplicationStop	:= TRUE;		//TRUE = Freigabe
 		stDrive.IN.bEnableEmergencyStop		:= TRUE;		//TRUE = Freigabe
-		stDrive.IN.uiAcceleration			:= 100;			//[Anwendereinheit in der Achse]
-		stDrive.IN.uiDeceleration			:= 100;			//[Anwendereinheit in der Achse]
-		stDrive.IN.iSetpointSpeed			:= 30;			//[Anwendereinheit in der Achse]
-		stDrive.IN.diTargetPosition			:= 1000;		//[Anwendereinheit in der Achse]
+		stDrive.IN.uiAcceleration			:= 10000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.uiDeceleration			:= 10000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.iSetpointSpeed			:= 30000;			//[Anwendereinheit in der Achse]
+		//stDrive.IN.diTargetPosition			:= 1600;		//[Anwendereinheit in der Achse]
+		stDrive.IN.rTargetPositionInMM := 50.0;
 		stDrive.IN.bStartStop				:= TRUE;		//TRUE = Freigabe Positionierbefehl
 		_uiState := 35;	
 
@@ -1275,7 +1277,7 @@ MapStructureToMovicKitFB();
 		//Varianten für In pos abfragen
 		//1. zeitverzögert fragen
 		//2. Istposition abgleichen mit Sollposition
-			IF ABS(stDrive.OUT.diActualPosition - stDrive.IN.diTargetPosition) < 1 THEN
+			IF ABS(stDrive.OUT.rActualPositionInMM - stDrive.IN.rTargetPositionInMM) < 0.01 THEN
 				_uiState := 10;
 			END_IF	
 	
@@ -1298,6 +1300,7 @@ MapStructureToMovicKitFB();
 		//END_IF
 		
 	50: 
+		// reset faults, fehler
 		stDrive.IN.bFaultReset := TRUE; 
 		IF stDrive.OUT.bFault = FALSE THEN 
 			stDrive.IN.bFaultReset := FALSE; 
@@ -1305,15 +1308,32 @@ MapStructureToMovicKitFB();
 		END_IF
 		
 	60:
-	//Generiere Fahrbefehl auf 1000mm
-		stDrive.IN.eTargetApplMode			:= eMOVIKITpositioningDrive_ApplMode.PositionAbs;
+		//Generiere Fahrbefehl auf Refernezfahrt Raising Edge
+		stDrive.IN.eTargetApplMode			:= eMOVIKITpositioningDrive_ApplMode.ReferenceOffsFieldb;
 		stDrive.IN.bEnableApplicationStop	:= TRUE;		//TRUE = Freigabe
 		stDrive.IN.bEnableEmergencyStop		:= TRUE;		//TRUE = Freigabe
-		stDrive.IN.uiAcceleration			:= 100;			//[Anwendereinheit in der Achse]
-		stDrive.IN.uiDeceleration			:= 100;			//[Anwendereinheit in der Achse]
-		stDrive.IN.iSetpointSpeed			:= 30;			//[Anwendereinheit in der Achse]
-		stDrive.IN.diTargetPosition			:= -45280;		//[Anwendereinheit in der Achse]
+		stDrive.IN.bStartStop 				:= TRUE;
+		stDrive.IN.bActivateOutputstageInhibit := TRUE;
+		stDrive.IN.uiAcceleration			:= 10000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.uiDeceleration			:= 10000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.iSetpointSpeed			:= 30000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.rTargetPositionInMM			:= 0;		//[Anwendereinheit in der Achse]
 		stDrive.IN.bStartStop				:= TRUE;		//TRUE = Freigabe Positionierbefehl
+		_uiState := 70;
+	
+	70:
+		//Generiere Fahrbefehl auf Refernezfahrt Falling Edge
+		// erst nach Falling Edge ist der Motor referenziert
+		stDrive.IN.eTargetApplMode			:= eMOVIKITpositioningDrive_ApplMode.ReferenceOffsFieldb;
+		stDrive.IN.bEnableApplicationStop	:= TRUE;		//TRUE = Freigabe
+		stDrive.IN.bEnableEmergencyStop		:= TRUE;		//TRUE = Freigabe
+		stDrive.IN.bStartStop 				:= TRUE;
+		stDrive.IN.bActivateOutputstageInhibit := TRUE;
+		stDrive.IN.uiAcceleration			:= 10000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.uiDeceleration			:= 10000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.iSetpointSpeed			:= 30000;			//[Anwendereinheit in der Achse]
+		stDrive.IN.rTargetPositionInMM			:= 0; //;		//[Anwendereinheit in der Achse]
+		stDrive.IN.bStartStop				:= FALSE;		//TRUE = Freigabe Positionierbefehl
 		_uiState := 0;	
 
 
@@ -1330,14 +1350,18 @@ END_CASE]]></ST>
     <LineIds Name="MAIN.MotorMovementStateMachine">
       <LineId Id="43" Count="6" />
       <LineId Id="122" Count="0" />
-      <LineId Id="51" Count="10" />
+      <LineId Id="51" Count="8" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="60" Count="1" />
       <LineId Id="80" Count="1" />
       <LineId Id="62" Count="8" />
       <LineId Id="82" Count="0" />
       <LineId Id="85" Count="0" />
       <LineId Id="84" Count="0" />
       <LineId Id="87" Count="0" />
-      <LineId Id="89" Count="7" />
+      <LineId Id="89" Count="6" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="96" Count="0" />
       <LineId Id="86" Count="0" />
       <LineId Id="98" Count="2" />
       <LineId Id="106" Count="0" />
@@ -1351,11 +1375,20 @@ END_CASE]]></ST>
       <LineId Id="116" Count="0" />
       <LineId Id="118" Count="1" />
       <LineId Id="110" Count="0" />
-      <LineId Id="123" Count="2" />
+      <LineId Id="123" Count="0" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="124" Count="1" />
       <LineId Id="128" Count="0" />
       <LineId Id="126" Count="1" />
       <LineId Id="111" Count="0" />
-      <LineId Id="129" Count="10" />
+      <LineId Id="129" Count="4" />
+      <LineId Id="140" Count="1" />
+      <LineId Id="134" Count="5" />
+      <LineId Id="144" Count="1" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="158" Count="0" />
+      <LineId Id="148" Count="9" />
+      <LineId Id="146" Count="0" />
       <LineId Id="112" Count="0" />
       <LineId Id="79" Count="0" />
       <LineId Id="3" Count="0" />

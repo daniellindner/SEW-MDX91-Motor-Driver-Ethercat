@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
   <POU Name="FB_MOVIKITpositioningDrive" Id="{595dd95d-da60-4e6b-8271-6a714fd84e56}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_MOVIKITpositioningDrive
 VAR_INPUT
@@ -25,7 +25,7 @@ VAR_INPUT
 	uiAcceleration: UINT;
 	uiDeceleration: UINT;
 	eTargetApplMode: eMOVIKITpositioningDrive_ApplMode;
-	diTargetPosition: DINT;
+	rTargetPositionInMM: REAL;
 	uiDecimalPlaces: UINT;
 	
 	bDIO01_DO: BOOL;
@@ -54,7 +54,8 @@ VAR_OUTPUT
 	iActualSpeed: INT;
 	uiActualTorque: UINT;
 	eActualApplMode: eMOVIKITpositioningDrive_ApplMode;
-	diActualPosition: DINT;
+	
+	rActualPositionInMM: REAL;
 	
 	uiStatus: UINT;
 	uiFaultNo: UINT;
@@ -84,6 +85,9 @@ VAR
 	uiActPosLow_i: DINT;
 	uiStatus_SubFault_i: UINT;
 	uiActualApplMode_i: UINT;
+
+	diActualPosition: DINT;
+	diTargetPosition: DINT;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -120,6 +124,10 @@ END_VAR
 IF uiDecimalPlaces=0 THEN
 	uiDecimalPlaces := 1;
 END_IF
+
+// target position is (pos. in mm) * 1000 / 6
+// code added bz Daniel and Olli to convert to integer target position
+diTargetPosition := REAL_TO_DINT(rTargetPositionInMM * 1000.0 / 6.0);
 
 diTargetPosition := diTargetPosition*uiDecimalPlaces;
 uiSetPosLow_i := DINT_TO_UINT(diTargetPosition AND 16#0000FFFF); 
@@ -220,6 +228,8 @@ eActualApplMode := arrProcessdata_IN[5];
 uiActPosLow_i := UINT_TO_DWORD(arrProcessdata_IN[7]);
 uiActPosHigh_i := SHL(UINT_TO_DWORD(arrProcessdata_IN[6]),16);
 diActualPosition := (uiActPosHigh_i + uiActPosLow_i)/uiDecimalPlaces;
+rActualPositionInMM := DINT_TO_REAL(diActualPosition) / 1000 * 6;
+
 ]]></ST>
     </Implementation>
     <LineIds Name="FB_MOVIKITpositioningDrive">
@@ -243,7 +253,11 @@ diActualPosition := (uiActPosHigh_i + uiActPosLow_i)/uiDecimalPlaces;
       <LineId Id="458" Count="0" />
       <LineId Id="475" Count="0" />
       <LineId Id="446" Count="0" />
-      <LineId Id="358" Count="3" />
+      <LineId Id="358" Count="2" />
+      <LineId Id="560" Count="1" />
+      <LineId Id="361" Count="0" />
+      <LineId Id="564" Count="0" />
+      <LineId Id="563" Count="0" />
       <LineId Id="357" Count="0" />
       <LineId Id="176" Count="0" />
       <LineId Id="178" Count="1" />
@@ -271,6 +285,8 @@ diActualPosition := (uiActPosHigh_i + uiActPosLow_i)/uiDecimalPlaces;
       <LineId Id="185" Count="0" />
       <LineId Id="184" Count="0" />
       <LineId Id="189" Count="1" />
+      <LineId Id="569" Count="0" />
+      <LineId Id="566" Count="0" />
       <LineId Id="188" Count="0" />
     </LineIds>
   </POU>

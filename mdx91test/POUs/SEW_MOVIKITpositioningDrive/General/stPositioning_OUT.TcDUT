@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
   <DUT Name="stPositioning_OUT" Id="{8e75f2ed-69db-4c23-b479-245f577db6bd}">
     <Declaration><![CDATA[TYPE stPositioning_OUT :
 STRUCT
@@ -29,7 +29,7 @@ STRUCT
 	uiActualTorque: UINT;
 	
 	eActualApplMode: eMOVIKITpositioningDrive_ApplMode;
-	diActualPosition: DINT;
+	rActualPositionInMM: REAL;
 	
 	
 	bDI00: BOOL;

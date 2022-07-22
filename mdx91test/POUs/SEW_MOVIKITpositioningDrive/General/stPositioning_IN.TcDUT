@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
   <DUT Name="stPositioning_IN" Id="{bed8ebea-da96-4e48-bdab-9da0511937b1}">
     <Declaration><![CDATA[TYPE stPositioning_IN :
 STRUCT
@@ -24,7 +24,7 @@ STRUCT
 	uiAcceleration: UINT;
 	uiDeceleration: UINT;
 	eTargetApplMode: eMOVIKITpositioningDrive_ApplMode;
-	diTargetPosition: DINT;
+	rTargetPositionInMM: REAL;
 	uiPosMulitplier: UINT;
 	
 	bDIO01_DO: BOOL;
